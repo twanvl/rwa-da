@@ -23,7 +23,6 @@ function [y_tgt,ys_tgt] = predict_abib(x_src,y_src,x_tgt, varargin)
   if ~isfield(opts,'oversample'), opts.oversample = 1; end
   if ~isfield(opts,'verbose'), opts.verbose = false; end
   if ~isfield(opts,'final'), opts.final = 'ensemble'; end
-  if ~isfield(opts,'combine_models'), opts.combine_models = false; end
   
   % Classifier for the source
   [y_tgt,best_opts_src,model_src] = opts.classifier(x_src, y_src, x_tgt, opts.classifier_opts_source);
