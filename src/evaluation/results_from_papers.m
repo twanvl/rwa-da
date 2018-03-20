@@ -5,6 +5,18 @@ function results = results_from_papers(data)
   %     Baochen Sun, Jiashi Feng, Kate Saenko;
   %     AAAI 2016
   
+  % [2] Unsupervised Domain Adaptation with Residual Transfer Networks
+  %     Long et al. 2016,
+  %     https://arxiv.org/pdf/1602.04433
+  
+  % [3a] Unsupervised Transductive Domain Adaptation
+  %      Sener et.al. 2016
+  %      https://arxiv.org/pdf/1602.03534.pdf
+  
+  % [3] Learning transferrable representations forunsupervised domain adaptation.
+  %     Sener et.al. 2016
+  %     http://ozansener.net/papers/domain_transduction.pdf
+  
   results = struct();
   results.methods = {};
   results.accs = [];
@@ -54,7 +66,7 @@ function results = results_from_papers(data)
     results.accs = office_31_results(:,which)' / 100;
     
     % Other results on office dataset
-    % From TDS paper
+    % From TDS paper [3a]
     if isequal(data.features,'raw')
       results.methods{end+1} = 'DLID'; %  (Chopra et al., 2013)
       results.accs(end+1,:)  = [nan, 51.9, nan, 78.2, nan, 89.9, nan] / 100;
@@ -66,27 +78,48 @@ function results = results_from_papers(data)
       results.accs(end+1,:)  = [nan, 73.0, nan, 96.4, nan, 99.2, nan] / 100;
       results.methods{end+1} = 'BP';
       results.accs(end+1,:)  = [72.8, 73.0, 54.4, 96.4, 53.6, 99.2, 74.9] / 100;
+      %results.methods{end+1} = 'TDS';
+      %results.accs(end+1,:)  = [84.1, 81.1, 58.3, 96.4, 63.8, 99.2, 80.5] / 100;
+      % [2] Long et al 2016
+      order = {'A->W', 'D->W', 'W->D', 'A->D', 'D->A', 'W->A', 'Z:avg'};
+      [~,perm]=sort(order);
+      results.methods{end+1} = 'RevGrad';
+      results.accs(end+1,:)  = [73.0, 96.4, 99.2, nan, nan, nan, nan](perm) / 100;
+      results.methods{end+1} = 'RTN';
+      results.accs(end+1,:)  = [73.3, 96.8, 99.6, 71.0, 50.5, 51.0, 73.7](perm) / 100;
+      %results.accs_std(end+1,:) = [0.3,0.2,0.1,0.2,0.3,0.1] / 100;
+      % [3]
+      order = {'A->W', 'D->W', 'W->D', 'W->A', 'A->D', 'D->A', 'Z:avg'};
+      [~,perm]=sort(order);
       results.methods{end+1} = 'TDS';
-      results.accs(end+1,:)  = [84.1, 81.1, 58.3, 96.4, 63.8, 99.2, 80.5] / 100;
+      results.accs(end+1,:)  = [.811,.964,.992,.638,.841,.583, nan](perm);
     end
-  elseif isequal(data.name, 'office-caltech') && isequal(data.features,'surf') && isequal(data.preprocessing,'norm-row,zscore')
-    % Table 3 of [1]: Office-caltech, full
-    results.methods = {'NA','SA','GFK','TCA','CORAL'};
-    results.accs = ...
-      [41.7 37.4 41.9 35.2 45.1 ... % A→C
-      ;44.6 36.3 41.4 39.5 39.5 ... % A→D
-      ;31.9 39.0 41.4 29.5 44.4 ... % A→W
-      ;53.1 44.9 56.0 46.8 52.1 ... % C→A
-      ;47.8 39.5 42.7 52.2 45.9 ... % C→D
-      ;41.7 41.0 45.1 38.6 46.4 ... % C→W
-      ;26.2 32.9 38.7 36.2 37.7 ... % D→A
-      ;26.4 34.3 36.5 30.1 33.8 ... % D→C
-      ;52.5 65.1 74.6 71.2 84.7 ... % D→W
-      ;27.6 34.4 31.9 32.2 36.0 ... % W→A
-      ;21.2 31.0 27.5 27.9 33.7 ... % W→C
-      ;78.3 62.4 79.6 74.5 86.6 ... % W→D
-      ;41.1 41.5 46.4 42.8 48.8 ... % AVG
-      ]' / 100;
+  elseif isequal(data.name, 'office-caltech')
+    if isequal(data.features,'surf') && isequal(data.preprocessing,'norm-row,zscore')
+      % Table 3 of [1]: Office-caltech, full
+      results.methods = {'NA','SA','GFK','TCA','CORAL'};
+      results.accs = ...
+        [41.7 37.4 41.9 35.2 45.1 ... % A→C
+        ;44.6 36.3 41.4 39.5 39.5 ... % A→D
+        ;31.9 39.0 41.4 29.5 44.4 ... % A→W
+        ;53.1 44.9 56.0 46.8 52.1 ... % C→A
+        ;47.8 39.5 42.7 52.2 45.9 ... % C→D
+        ;41.7 41.0 45.1 38.6 46.4 ... % C→W
+        ;26.2 32.9 38.7 36.2 37.7 ... % D→A
+        ;26.4 34.3 36.5 30.1 33.8 ... % D→C
+        ;52.5 65.1 74.6 71.2 84.7 ... % D→W
+        ;27.6 34.4 31.9 32.2 36.0 ... % W→A
+        ;21.2 31.0 27.5 27.9 33.7 ... % W→C
+        ;78.3 62.4 79.6 74.5 86.6 ... % W→D
+        ;41.1 41.5 46.4 42.8 48.8 ... % AVG
+        ]' / 100;
+    elseif isequal(data.features,'raw')
+      % table 2 of [2]
+      order = {'A→W','D→W','W→D','A→D','D→A','W→A','A→C','W→C','D→C','C→A','C→W','C→D','z:Avg'};
+      [~,perm]=sort(order);
+      results.methods{end+1} = 'RTN';
+      results.accs(end+1,:)  = [95.2, 99.2, 100, 95.5, 93.8, 92,5, 88.1, 86.6, 84.6, 93.7, 96.9, 94.2, 93.4](perm) / 100;
+    end
     
   elseif isequal(data.name, 'cross-dataset-testbed') && isequal(data.features,'decaf-fc7') && isequal(data.preprocessing,'zscore')
     % Table 4 of [1]: Cross dataset testbed

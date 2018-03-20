@@ -88,6 +88,10 @@ function data = load_dataset(data, features, preprocessing)
     data = load_office(datadir, data, 'full');
   elseif isequal(data.name, 'office-31-standard')
     data = load_office(datadir, data, 'standard');
+  elseif isequal(data.name, 'office-repeated')
+    data = load_office(datadir, data, 'full');
+    data.name = 'office-repeated';
+    data.num_repetitions = 10;
   
   elseif isequal(data.name, 'cross-dataset-testbed')
     % Load the Cross-Dataset Testbed with decaf-fc7 features (subsampled)
