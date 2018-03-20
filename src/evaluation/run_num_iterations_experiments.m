@@ -4,7 +4,7 @@ function run_num_iterations_experiments(fast)
   for ios=1:numel(oversamples);
     os = oversamples(ios);
     method.filename = sprintf('icb-%g', os);
-    method.method = @predict_abib;
+    method.method = @predict_rwa;
     method.args = {'num_iterations',2000, 'oversample',os};
     
     preprocessing = 'joint-std';

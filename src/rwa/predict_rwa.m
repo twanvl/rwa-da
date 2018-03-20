@@ -1,7 +1,7 @@
-function [y_tgt,ys_tgt] = predict_abib(x_src,y_src,x_tgt, varargin)
-  % ABiB Domain adaptation.
+function [y_tgt,ys_tgt] = predict_rwa(x_src,y_src,x_tgt, varargin)
+  % RWA Domain adaptation.
   % Usage:
-  %   y_tgt = predict_abib(x_src, y_src, x_tgt, options...)
+  %   y_tgt = predict_rwa(x_src, y_src, x_tgt, options...)
   % 
   % Options can be given as a key,value pairs or as a struct.
   % Default settings are those used in the paper.
